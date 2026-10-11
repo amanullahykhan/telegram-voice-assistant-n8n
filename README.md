@@ -1,6 +1,19 @@
-# 🎙️ Telegram Voice-Activated AI Assistant (n8n + Ollama + Speaches)
+<p align="center">
+  <img src="assets/telegram-voice-activated-ai-assistant.png" alt="Telegram Voice-Activated AI Assistant — private, self-hosted, voice in and voice out" width="100%" />
+</p>
 
-A fully self-hosted, privacy-first Telegram assistant built on **n8n**. It understands **text and voice notes**, answers with a local LLM (**Ollama**), replies in **text and synthesized speech**, stores conversation history in **PostgreSQL**, and delivers **natural-language reminders** on schedule. No cloud AI APIs required.
+<p align="center">
+  <a href="https://n8n.io"><img src="https://img.shields.io/badge/n8n-Workflow_Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n workflow automation" /></a>
+  <a href="https://telegram.org"><img src="https://img.shields.io/badge/Telegram-Bot_API-26A5E4?logo=telegram&logoColor=white" alt="Telegram Bot API" /></a>
+  <a href="https://ollama.com"><img src="https://img.shields.io/badge/Ollama-Local_LLM-111111?logo=ollama&logoColor=white" alt="Ollama local LLM" /></a>
+  <a href="https://github.com/speaches-ai/speaches"><img src="https://img.shields.io/badge/Speaches-Local_STT%2FTTS-7755CC?logoColor=white" alt="Speaches speech services" /></a>
+  <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/PostgreSQL-Persistent_Memory-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" /></a>
+</p>
+
+<p align="center">
+  <strong>🎙️ Voice in · 🧠 Local AI · 🔊 Voice out · 🗃️ Persistent memory · ⏰ Smart reminders</strong><br />
+  Privacy-first and self-hosted: text and voice conversations run through your own services, without cloud AI APIs.
+</p>
 
 ---
 
@@ -25,15 +38,15 @@ A fully self-hosted, privacy-first Telegram assistant built on **n8n**. It under
 
 ## Features
 
-- **Voice in, voice out**: send a Telegram voice note, get a text reply plus an MP3 audio reply.
-- **Local speech-to-text**: `faster-whisper-small` served by [Speaches](https://github.com/speaches-ai/speaches).
-- **Local text-to-speech**: `Kokoro-82M` (ONNX) via Speaches.
-- **Local LLM**: any Ollama chat model (default: `richardyoung/qwen2.5-3b-instruct-abliterated`).
-- **Persistent memory**: last 10 messages per conversation are sent as context.
-- **Natural-language reminders**: "remind me to call John at 5pm" is parsed by the LLM into structured JSON and saved.
-- **Reliable reminder dispatcher**: cron workflow runs every minute and uses `FOR UPDATE SKIP LOCKED` to avoid double-sending.
-- **Safety rails**: update de-duplication, per-user rate limiting (10 msgs / 60 s), `/register` gate, error alerts to an admin chat.
-- **Centralized error handling**: any failing workflow notifies you on Telegram.
+- 🎙️ **Voice in, voice out**: send a Telegram voice note, get a text reply plus an MP3 audio reply.
+- 📝 **Local speech-to-text**: `faster-whisper-small` served by [Speaches](https://github.com/speaches-ai/speaches).
+- 🔊 **Local text-to-speech**: `Kokoro-82M` (ONNX) via Speaches.
+- 🧠 **Local LLM**: any Ollama chat model (default: `richardyoung/qwen2.5-3b-instruct-abliterated`).
+- 🗃️ **Persistent memory**: last 10 messages per conversation are sent as context.
+- ⏰ **Natural-language reminders**: "remind me to call John at 5pm" is parsed by the LLM into structured JSON and saved.
+- ⚙️ **Reliable reminder dispatcher**: cron workflow runs every minute and uses `FOR UPDATE SKIP LOCKED` to avoid double-sending.
+- 🛡️ **Safety rails**: update de-duplication, per-user rate limiting (10 msgs / 60 s), `/register` gate, error alerts to an admin chat.
+- 🚨 **Centralized error handling**: any failing workflow notifies you on Telegram.
 
 ---
 
@@ -100,6 +113,18 @@ All exported workflows have been **sanitized**: credentials, webhook IDs, instan
 
 ## Tech Stack
 
+<p align="center">
+  <a href="https://n8n.io"><img src="https://img.shields.io/badge/n8n-Automation-EA4B71?logo=n8n&logoColor=white" alt="n8n" /></a>
+  <a href="https://ollama.com"><img src="https://img.shields.io/badge/Ollama-Local_AI-111111?logo=ollama&logoColor=white" alt="Ollama" /></a>
+  <a href="https://core.telegram.org/bots/api"><img src="https://img.shields.io/badge/Telegram-Bot_API-26A5E4?logo=telegram&logoColor=white" alt="Telegram Bot API" /></a>
+  <a href="https://github.com/speaches-ai/speaches"><img src="https://img.shields.io/badge/Speaches-Speech_Engine-7755CC?logoColor=white" alt="Speaches" /></a>
+  <a href="https://www.postgresql.org"><img src="https://img.shields.io/badge/PostgreSQL-Database-4169E1?logo=postgresql&logoColor=white" alt="PostgreSQL" /></a>
+  <a href="https://www.python.org"><img src="https://img.shields.io/badge/Python-Supporting_Tools-3776AB?logo=python&logoColor=white" alt="Python" /></a>
+  <a href="https://onnx.ai"><img src="https://img.shields.io/badge/ONNX-Audio_Runtime-005CED?logo=onnx&logoColor=white" alt="ONNX" /></a>
+  <img src="https://img.shields.io/badge/faster--whisper-Speech_to_Text-2F6F9F" alt="faster-whisper speech-to-text" />
+  <img src="https://img.shields.io/badge/Kokoro--82M-Text_to_Speech-8A5CF6" alt="Kokoro-82M text-to-speech" />
+</p>
+
 | Component | Purpose |
 |-----------|---------|
 | [n8n](https://n8n.io) | Workflow automation engine |
@@ -125,7 +150,7 @@ All exported workflows have been **sanitized**: credentials, webhook IDs, instan
 
 ## Installation & Setup
 
-### 1. Start supporting services
+### 1. 🚀 Start supporting services
 
 Example `docker-compose.yml` fragment (adapt to your environment):
 
@@ -155,11 +180,11 @@ curl -X POST http://speaches:8000/v1/models/speaches-ai/Kokoro-82M-v1.0-ONNX
 
 > The main workflow includes a disconnected helper node (`HTTP Request`) that performs the Whisper model download. Run it manually once if you prefer to do it from n8n.
 
-### 2. Create the database
+### 2. 🗃️ Create the database
 
 Run the SQL in [Database Schema](#database-schema) against your PostgreSQL database.
 
-### 3. Create n8n credentials
+### 3. 🔐 Create n8n credentials
 
 In n8n, go to **Credentials** and create:
 
@@ -168,20 +193,20 @@ In n8n, go to **Credentials** and create:
 | `Telegram account` | Telegram API | Bot token from BotFather |
 | `Postgres account` | Postgres | Host, port, DB, user, password |
 
-### 4. Import the workflows
+### 4. 🔄 Import the workflows
 
 For each file in `workflows/`: **n8n → Workflows → Import from file**.
 
 After import, open every Telegram and Postgres node and **select your credential** (they were stripped for security). The quickest way: open the workflow, click a node showing a credential warning, choose the credential, repeat.
 
-### 5. Configure the workflows
+### 5. ⚙️ Configure the workflows
 
 1. **Error Handler**: in the *Send a text message* node, replace `YOUR_TELEGRAM_ADMIN_CHAT_ID` with your own Telegram chat ID (get it from [@userinfobot](https://t.me/userinfobot)).
 2. **Main bot** (`ChatBot-v2`): update the Ollama URL (`http://10.0.3.1:11434`) in the three HTTP Request nodes (`HTTP Request2`, `HTTP Request3`, `Ask Ollama (Voice)`) to your Ollama host, and the model name if different.
 3. **Reminder Dispatcher**: check the timezone in workflow settings (default `Asia/Karachi`).
 4. In the main bot workflow settings, set **Error Workflow** to `2.Chatbot – Error Handler`. Do the same for the Reminder Dispatcher.
 
-### 6. Activate
+### 6. ✅ Activate
 
 Activate all three workflows. Message your bot, send `/register`, then start chatting.
 
@@ -376,6 +401,11 @@ Reminders arrive as `⏰ Reminder: call John` at the due time.
 ---
 
 ## Author
+
+<p align="left">
+  <a href="https://github.com/amanullahykhan"><img src="https://img.shields.io/badge/GitHub-amanullahykhan-181717?logo=github&logoColor=white" alt="GitHub: amanullahykhan" /></a>
+  <a href="https://www.linkedin.com/in/amanullahkhan/"><img src="https://img.shields.io/badge/LinkedIn-Amanullah_Khan-0A66C2?logo=linkedin&logoColor=white" alt="LinkedIn: Amanullah Khan" /></a>
+</p>
 
 **Amanullah Khan**
 
