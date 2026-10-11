@@ -1,0 +1,150 @@
+{
+  "name": "Reminder Dispatcher (Cron)",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE reminders SET status = 'failed' WHERE id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('fetch due reminders1').item.json.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        400,
+        -352
+      ],
+      "id": "40b690e8-81b7-4484-b7f1-c1c0777083b4",
+      "name": "mark as failed"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "WITH claimed AS (\n  UPDATE reminders\n  SET status = 'sending'\n  WHERE id IN (\n    SELECT id FROM reminders\n    WHERE status = 'pending' AND due_at <= now()\n    ORDER BY due_at ASC\n    LIMIT 50\n    FOR UPDATE SKIP LOCKED\n  )\n  RETURNING id, content, due_at, user_id\n)\nSELECT c.id, c.content, c.due_at, u.telegram_chat_id\nFROM claimed c\nJOIN users u ON u.id = c.user_id\nORDER BY c.due_at ASC;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -16,
+        -432
+      ],
+      "id": "b33b7f70-abdf-4826-b6a3-e7015cd66080",
+      "name": "fetch due reminders1"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 1
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -224,
+        -432
+      ],
+      "id": "cc204d56-7c2e-406e-87e2-3477186e5bf8",
+      "name": "Cron / Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.telegram_chat_id }}",
+        "text": "=⏰ Reminder: {{ $json.content }}",
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        192,
+        -432
+      ],
+      "id": "bd64647c-0534-447a-88a0-dcb9affc0bb5",
+      "name": "send the reminder1",
+      "retryOnFail": true,
+      "waitBetweenTries": 1000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE reminders SET status = 'sent' WHERE id = $1;",
+        "options": {
+          "queryReplacement": "={{ $('fetch due reminders1').item.json.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        400,
+        -480
+      ],
+      "id": "18677209-2d6b-4127-8d99-c4ce559c8a97",
+      "name": "mark as sent1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "fetch due reminders1": {
+      "main": [
+        [
+          {
+            "node": "send the reminder1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Cron / Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "fetch due reminders1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "send the reminder1": {
+      "main": [
+        [
+          {
+            "node": "mark as sent1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "mark as failed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "Asia/Karachi",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "tags": []
+}
