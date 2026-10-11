@@ -418,4 +418,4 @@ Reminders arrive as `⏰ Reminder: call John` at the due time.
 
 ## License
 
-Choose a license for your repository (e.g., MIT) and add a `LICENSE` file.
+MIT LICENSE
